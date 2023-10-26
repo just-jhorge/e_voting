@@ -3,7 +3,7 @@ import Features from "./components/Features";
 import Introduction from "./components/Introduction";
 import Pricing from "./components/Pricing";
 
-export default function Home() {
+export default async function Home() {
     return (
         <main>
             <Introduction />

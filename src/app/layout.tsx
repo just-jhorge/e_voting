@@ -9,7 +9,7 @@ export const metadata: Metadata = {
         "An application built for organising electronic voting in Nursing and Midwifery Training College, Kumasi.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
             <body>
