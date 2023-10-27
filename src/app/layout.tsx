@@ -9,6 +9,8 @@ export const metadata: Metadata = {
         "An application built for organising electronic voting in Nursing and Midwifery Training College, Kumasi.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
