@@ -9,8 +9,6 @@ const Navbar = async () => {
         data: { session },
     } = await supabase.auth.getSession();
 
-    console.log(session);
-
     return (
         <nav className="w-full h-14 bg-white flex items-center justify-center shadow-md">
             <div className="container h-full flex items-center justify-between">
@@ -34,7 +32,12 @@ const Navbar = async () => {
                             </Link>
                         </>
                     ) : (
-                        <LogoutButton />
+                        <>
+                            <Link href="/dashboard" className="flex items-center justify-center mr-3 text-sm">
+                                Dashboard
+                            </Link>
+                            <LogoutButton />
+                        </>
                     )}
                 </div>
             </div>
