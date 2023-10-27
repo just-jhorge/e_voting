@@ -2,35 +2,64 @@
 
 import * as z from "zod";
 import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
+import { signinSchema } from "@/lib/schemas";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-
-const formSchema = z.object({
-    email: z.string().email().min(1, { message: "Field cannot be empty" }),
-    password: z.string().min(8, { message: "At least 8 characters expected" }),
-});
+import { toast } from "@/components/ui/use-toast";
 
 export default function Page() {
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
+    const supabase = createClientComponentClient();
+
+    const form = useForm<z.infer<typeof signinSchema>>({
+        resolver: zodResolver(signinSchema),
         defaultValues: {
             email: "",
             password: "",
         },
     });
 
-    const onSubmit = async () => {
-        console.log("Form submitted");
+    const onSubmit = async (values: z.infer<typeof signinSchema>) => {
+        try {
+            setLoading(true);
+
+            const { error } = await supabase.auth.signInWithPassword({
+                email: values.email,
+                password: values.password,
+            });
+
+            if (!error) {
+                router.push("/dashboard");
+            } else if (error) {
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: "Something went wrong signing you in. Please try again",
+                });
+            }
+
+            router.refresh();
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <main className="w-full h-[calc(100vh-11.5rem)] sm:h-[calc(100vh-7.5rem)]">
             <div className="container flex items-center justify-center h-full">
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full sm:w-1/4 space-y-3">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="w-4/5 sm:w-1/4 space-y-3">
                         <FormField
                             control={form.control}
                             name="email"
@@ -56,10 +85,20 @@ export default function Page() {
                                 </FormItem>
                             )}
                         />
-                        <Link href="/" className="w-full text-sm text-blue-500">
-                            Forgot password?
-                        </Link>
-                        <Button className="w-full">Submit</Button>
+                        <div className="w-full flex items-center justify-between text-sm">
+                            <p>
+                                New user?{" "}
+                                <Link href="/auth/signup" className="text-blue-500">
+                                    Sign up
+                                </Link>
+                            </p>
+                            <Link href="/auth/signup" className="text-blue-500">
+                                Forgot password?
+                            </Link>
+                        </div>
+                        <Button type="submit" className="w-full">
+                            {loading ? "Loading..." : "Sign in"}
+                        </Button>
                     </form>
                 </Form>
             </div>

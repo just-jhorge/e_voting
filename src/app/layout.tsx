@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "../styles/globals.css";
 import Navbar from "@/components/navigation/Navbar";
 import Footer from "@/components/navigation/Footer";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
     title: "E-Voting System",
@@ -18,6 +19,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <Navbar />
                 <>{children}</>
                 <Footer />
+                <Toaster />
             </body>
         </html>
     );
