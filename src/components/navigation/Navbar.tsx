@@ -10,7 +10,7 @@ const Navbar = async () => {
     } = await supabase.auth.getSession();
 
     return (
-        <nav className="w-full h-14 bg-white flex items-center justify-center shadow-md">
+        <nav className="w-full h-14 bg-white flex items-center justify-center shadow-sm">
             <div className="container h-full flex items-center justify-between">
                 <h3 className="font-bold text-xl uppercase">
                     <Link href="/">Ballotio</Link>
