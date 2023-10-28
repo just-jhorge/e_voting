@@ -1,6 +1,8 @@
 import ElectionCard from "@/components/cards/ElectionCard";
+import { elections } from "@/lib/data";
 import Link from "next/link";
 import React from "react";
+import { ElectionStatus, ElectionType } from "../../../types";
 
 export default function Page() {
     return (
@@ -16,15 +18,28 @@ export default function Page() {
                     </Link>
                 </section>
                 <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                    <ElectionCard />
-                    <ElectionCard />
-                    <ElectionCard />
-                    <ElectionCard />
-                    <ElectionCard />
-                    <ElectionCard />
-                    <ElectionCard />
-                    <ElectionCard />
-                    <ElectionCard />
+                    {elections.map((election, index) => {
+                        const { election_name, opening_date, closing_date, election_type } = election;
+
+                        const isElectionActive = (opening_date: string, closing_date: string) => {
+                            const currentDate = new Date();
+                            const openingDate = new Date(opening_date);
+                            const closingDate = new Date(closing_date);
+
+                            return currentDate >= openingDate && currentDate <= closingDate;
+                        };
+
+                        return (
+                            <ElectionCard
+                                key={index}
+                                election_name={election_name}
+                                opening_date={new Date(opening_date)}
+                                closing_date={new Date(closing_date)}
+                                status={isElectionActive(opening_date, closing_date)}
+                                election_type={election_type as ElectionType}
+                            />
+                        );
+                    })}
                 </section>
             </div>
         </>
