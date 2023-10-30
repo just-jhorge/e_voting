@@ -1,14 +1,21 @@
-import Link from 'next/link'
-import React from 'react'
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function NotFound() {
-  return (
-    <main className='h-screen w-screen flex items-center justify-center'>
-        <div className='text-center'>
-            <h3>Not Found</h3>
-            <p>Failed to fetch resource requested</p>
-            <Link href='/'>Return home</Link>
-        </div>
-    </main>
-  )
+    const router = useRouter();
+
+    return (
+        <main className="h-[calc(100vh-11.5rem)] sm:h-[calc(100vh-7.5rem)] flex items-center justify-center">
+            <div className="text-center space-y-3">
+                <h3>Not Found</h3>
+                <p>Failed to fetch resource requested</p>
+                <div className="flex items-center justify-center gap-2">
+                    <Button onClick={() => router.back()}>Go Back</Button>
+                    <Button onClick={() => router.replace("/")}>Go Home</Button>
+                </div>
+            </div>
+        </main>
+    );
 }
