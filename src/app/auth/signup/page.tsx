@@ -34,7 +34,7 @@ export default function Page() {
         try {
             setLoading(true);
 
-            const { error } = await supabase.auth.signUp({
+            const { data, error } = await supabase.auth.signUp({
                 email: values.email,
                 password: values.password,
                 options: {
@@ -46,7 +46,18 @@ export default function Page() {
             });
 
             if (!error) {
-                router.push("/dashboard");
+                const { error } = await supabase.from("users").insert({
+                    user_id: data.user?.id,
+                    firstname: values.firstName,
+                    lastname: values.lastName,
+                    email: values.email,
+                });
+
+                if (!error) {
+                    router.push("/dashboard");
+                } else {
+                    console.log(error);
+                }
             } else if (error) {
                 toast({
                     variant: "destructive",

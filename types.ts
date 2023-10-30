@@ -2,9 +2,13 @@ export type ElectionStatus = "CLOSED" | "OPEN";
 export type ElectionType = "ONE-TO-ONE" | "ONE-TO-MANY";
 
 export type Election = {
+    close_date: string;
+    contestants: JSON;
+    created_at: string;
+    created_by: string;
+    election_id: string;
     election_name: string;
-    opening_date: Date;
-    closing_date: Date;
-    election_status: ElectionStatus;
-    election_type: ElectionType;
+    election_type: string;
+    open_date: string;
+    voters: JSON;
 };

@@ -13,31 +13,67 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input";
-
-const FormSchema = z.object({
-    election_name: z.string().min(10, {
-        message: "Election name must be at least 10 characters.",
-    }),
-    openDate: z.date({
-        required_error: "A date of birth is required.",
-    }),
-    closeDate: z.date({
-        required_error: "A date of birth is required.",
-    }),
-    election_type: z.string().min(1),
-});
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from "next/navigation";
+import { newElectionSchema } from "@/lib/schemas";
+import { useState } from "react";
+import { toast } from "@/components/ui/use-toast";
 
 export default function Page() {
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
+    const [loading, setLoading] = useState(false);
+
+    const router = useRouter();
+    const supabase = createClientComponentClient();
+
+    const form = useForm<z.infer<typeof newElectionSchema>>({
+        resolver: zodResolver(newElectionSchema),
         defaultValues: {
             election_name: "",
             election_type: "",
         },
     });
 
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-        console.log(data);
+    async function onSubmit(values: z.infer<typeof newElectionSchema>) {
+        const {
+            data: { session },
+        } = await supabase.auth.getSession();
+
+        const user_id = session?.user.id;
+
+        try {
+            setLoading(true);
+
+            const { error } = await supabase.from("elections").insert({
+                created_by: user_id,
+                election_name: values.election_name,
+                election_type: values.election_type,
+                open_date: values.openDate.toLocaleDateString(),
+                close_date: values.closeDate.toLocaleDateString(),
+                voters: {},
+                contestants: {},
+            });
+
+            if (!error) {
+                toast({
+                    title: "Success",
+                    description: "Election created successfully.",
+                });
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Error",
+                    description: error.message,
+                });
+            }
+
+            router.refresh();
+            form.reset();
+            router.push("/dashboard");
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -114,10 +150,6 @@ export default function Page() {
                                                         mode="single"
                                                         selected={field.value}
                                                         onSelect={field.onChange}
-                                                        disabled={(date) =>
-                                                            date > new Date() || date < new Date("1900-01-01")
-                                                        }
-                                                        initialFocus
                                                     />
                                                 </PopoverContent>
                                             </Popover>
@@ -165,7 +197,7 @@ export default function Page() {
                             </div>
                         </div>
                         <Button type="submit" className="w-full">
-                            Submit
+                            {loading ? "Adding election..." : "Add Election"}
                         </Button>
                     </form>
                 </Form>

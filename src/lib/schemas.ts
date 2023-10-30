@@ -13,8 +13,14 @@ export const signupSchema = z.object({
 });
 
 export const newElectionSchema = z.object({
-    // election_name: z.string().min(3),
-    open_date: z.preprocess((arg) => (typeof arg == "string" ? new Date(arg) : undefined), z.date()),
-    close_date: z.preprocess((arg) => (typeof arg == "string" ? new Date(arg) : undefined), z.date()),
-    // election_type: z.string().min(1),
+    election_name: z.string().min(10, {
+        message: "Election name must be at least 10 characters.",
+    }),
+    openDate: z.date({
+        required_error: "A date of birth is required.",
+    }),
+    closeDate: z.date({
+        required_error: "A date of birth is required.",
+    }),
+    election_type: z.string().min(1),
 });
