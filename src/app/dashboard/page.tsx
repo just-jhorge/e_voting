@@ -1,10 +1,9 @@
+import Link from "next/link";
 import ElectionCard from "@/components/cards/ElectionCard";
 import { elections } from "@/lib/data";
-import Link from "next/link";
-import React from "react";
-import { ElectionStatus, ElectionType } from "../../../types";
+import { ElectionType } from "../../../types";
 
-export default function Page() {
+export default async function Page() {
     return (
         <>
             <div className="container space-y-5 sm:space-y-10">
