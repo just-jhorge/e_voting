@@ -34,6 +34,8 @@ export default function Page() {
     });
 
     async function onSubmit(values: z.infer<typeof newElectionSchema>) {
+        console.log(values);
+
         const {
             data: { session },
         } = await supabase.auth.getSession();
@@ -47,8 +49,8 @@ export default function Page() {
                 created_by: user_id,
                 election_name: values.election_name,
                 election_type: values.election_type,
-                open_date: values.openDate.toLocaleDateString(),
-                close_date: values.closeDate.toLocaleDateString(),
+                open_date: values.openDate,
+                close_date: values.closeDate,
                 voters: {},
                 contestants: {},
             });

@@ -21,7 +21,7 @@ const ElectionCard: React.FC<ElectionCardProps> = ({
             <div
                 className={`border border-gray-300 shadow-sm rounded-sm ${
                     status ? "bg-green-100" : "bg-red-100"
-                } min-h-[5rem] px-4 py-5`}
+                } min-h-[5rem] px-4 py-5 hover:bg-opacity-50 transition`}
             >
                 <h3 className="mb-3 font-semibold w-full truncate">{election_name}</h3>
                 <div className="text-sm sm:text-base">
